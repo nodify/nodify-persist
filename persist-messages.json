@@ -1,0 +1,14 @@
+{
+  "D": {
+    "QUERY": "query=(%s), params=%j",
+    "RESULT": "%j"
+  },
+  "I": {
+    "MYSQL": "host=%s, database=%s, user=%s"
+  },
+  "E": {
+    "NOPROV": "No Provider Specified",
+    "CONNECT": "%j",
+    "QUERY": "%j"
+  }
+}
