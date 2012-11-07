@@ -5,12 +5,12 @@
     {
       "name": "Meadhbh Hamrick",
       "email": "meadhbh@smithee.us",
-      "web": "http://nodify.us/"
+      "url": "http://nodify.us/"
     },
     {
       "name": "Meadhbh Hamrick",
       "email": "OhMeadhbh@gmail.com",
-      "web": "http://meadhbh.org/"
+      "url": "http://meadhbh.org/"
     }
   ],
   "licenses": [
@@ -29,8 +29,31 @@
     "mysql": "2.0.0-alpha3",
     "nodify-logger": "0.2.3"
   },
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "./nodify-persist.js",
-  "directories": [ "src", "test", "examples" ],
-  "keywords": [ "persistence", "mysql", "mongod" ]
+  "directories": [
+    "src",
+    "test",
+    "examples"
+  ],
+  "keywords": [
+    "persistence",
+    "mysql",
+    "mongod"
+  ],
+  "_npmUser": {
+    "name": "OhMeadhbh",
+    "email": "OhMeadhbh@gmail.com"
+  },
+  "_id": "nodify-persist@0.0.1",
+  "devDependencies": {},
+  "optionalDependencies": {},
+  "engines": {
+    "node": "*"
+  },
+  "_engineSupported": true,
+  "_npmVersion": "1.1.4",
+  "_nodeVersion": "v0.6.12",
+  "_defaultsLoaded": true,
+  "_from": "nodify-persist"
 }

@@ -15,7 +15,7 @@
     var that = this;
     this.instances = [];
 
-    var good_options = [ 'target', 'mysql', 'collections', 'drop', 'populate', 'loglevel' ];
+    var good_options = [ 'target', 'mysql', 'collections', 'drop', 'populate', 'loglevel', 'path' ];
     _.each( good_options, function( option ) {
       if( options[ option ] ) {
         that[ option ] = options[ option ];
@@ -85,6 +85,7 @@
 
       function _create() {
         _.each( that.collections, function( path ) {
+          if( that.path ) { path = that.path + '/' + path; }
           var collection = require( path );
           collection.dao = that.target;
           log( PERSIST.I_COLLECT, collection.name );

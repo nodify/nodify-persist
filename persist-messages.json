@@ -4,7 +4,8 @@
     "RESULT": "%j"
   },
   "I": {
-    "MYSQL": "host=%s, database=%s, user=%s"
+    "MYSQL": "host=%s, database=%s, user=%s",
+    "COLLECT": "processing collection %s"
   },
   "E": {
     "NOPROV": "No Provider Specified",

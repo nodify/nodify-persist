@@ -79,10 +79,26 @@
     var elements = _.keys( schema.items );
     var name = collection.name;
 
-    this.target[ name + 'Create' ] = _.bind( _create_accessor, this );
-    this.target[ name + 'Read' ] = _.bind( _read_accessor, this );
-    this.target[ name + 'Update' ] = _.bind( _update_accessor, this );
-    this.target[ name + 'Delete' ] = _.bind( _delete_accessor, this );
+    this.target[ name + 'Create' ] = _.bind( _create_accessor( elements ), this );
+    this.target[ name + 'Read' ] = _.bind( _read_accessor( elements ), this );
+    this.target[ name + 'Update' ] = _.bind( _update_accessor( elements ), this );
+    this.target[ name + 'Delete' ] = _.bind( _delete_accessor( elements ), this );
+
+    collection.prototype._create = function ( _complete ) {
+      that.target[ name + 'Create' ]( this, _complete );
+    };
+
+    collection.prototype._read = function ( _complete ) {
+      that.target[ name + 'Read' ]( this, _complete );
+    };
+
+    collection.prototype._update = function ( _complete ) {
+      that.target[ name + 'Update' ]( this, _complete );
+    };
+
+    collection.prototype._delete = function ( _complete ) {
+      that.target[ name + 'Delete' ]( this, _complete );
+    };
 
     if( drop ) {
       _build_tables();
@@ -137,105 +153,116 @@
       }
     }
 
-    function _create_accessor( input, _callback ) {
-      var params = _get_params( input );
+    function _create_accessor( keys ) {
+      return function( input, _callback ) {
+        var params = _get_params( input, keys );
 
-      if( schema.expires && ( ! input.expires ) ) {
-        params[0].push( 'expires' );
-        params[1].push( new Date( Date.now() + 86400000 ) );
-      }
-
-      if( params[0].length > 0 ) {
-        var query = "INSERT INTO " + name + "(" + params[0].join(',') + ") " +
-          "VALUES (" + Array(params[0].length).join('?,') +"?)";
-        this.query( query, params[1], function( err, data ) {
-          if( err ) { return _callback( err ); }
-          var qdata = {};
-          qdata[ schema.key ] = data.insertId;
-          that.target[ name + 'Read' ]( qdata, _callback );
-        } );
-      } else {
-        _callback( null, [] );
-      }
-    }
-
-    function _read_accessor( input, _callback ) {
-      var params = _get_params( input );
-      var query = "SELECT * FROM " + name;
-      var where = '';
-
-      if( params[0].length > 0 ) {
-        where += params[0].join( '=?,' ) + '=?';
-      }
-
-      if( schema.expires ) {
-        where += " AND expires > '" +new Date( Date.now() ).toISOString() + "'";
-      }
-      
-      if( '' !== where ) {
-        query += " WHERE " + where ;
-      }
-
-      this.query( query, params[1], function( err, data ) {
-        if( err ) { return _callback( err ); }
-        var results = [];
-        _.each( data, function( item ) {
-          results.push( new collection( item ) );
-        } );
-        _callback( null, results );
-      } );
-    }
-
-    function _update_accessor( input, _callback ) {
-      var params = _get_params( input );
-      if( ( params[0].length > 0 ) && input[ schema.key ] ) {
-        var query = "UPDATE " + name + " SET " + params[0].join('=?,') + 
-          "=? WHERE " + schema.key + "=?";
-        params[1].push( input[ schema.key ] );
-
-        if( schema.expires ) {
-          query += " AND expires > '" + 
-            new Date( Date.now() ).toISOString() + "'";
+        if( schema.expires && ( ! input.expires ) ) {
+          params[0].push( 'expires' );
+          params[1].push( new Date( Date.now() + 86400000 ) );
         }
 
-        this.query( query, params[1], function( err, data ) {
-          if( err ) { return _callback( err ); }
-          var qdata = {};
-          qdata[ schema.key ] = input[ schema.key ];
-          that.target[ name + 'Read' ]( qdata, _callback );
-        } );
-      } else {
-        _callback( null, [] );
-      }
-    }
-
-    function _delete_accessor( input, _callback ) {
-      if( input[ schema.key ] ) {
-        var query = "DELETE FROM " + name + " WHERE " + schema.key + "=?";
-
-        if( schema.expires ) {
-          query += " AND expires > '" + 
-            new Date( Date.now() ).toISOString() + "'";
-        }
-
-        this.query( query, [ input[ schema.key ] ], function( err, data ) {
-          if( err ) { return _callback( err ); }
+        if( params[0].length > 0 ) {
+          var query = "INSERT INTO " + name + "(" + params[0].join(',') + ") " +
+            "VALUES (" + Array(params[0].length).join('?,') +"?)";
+          this.query( query, params[1], function( err, data ) {
+            if( err ) { return _callback( err ); }
+            var qdata = {};
+            qdata[ schema.key ] = data.insertId;
+            that.target[ name + 'Read' ]( qdata, _callback );
+          } );
+        } else {
           _callback( null, [] );
-        } );        
-      } else {
-        _callback( null, [] );
-      }
+        }
+      };
     }
 
-    function _get_params ( object ) {
-      var values = [];
-      var keys = [];
-      _.each( object, function( value, key ) {
-        values.push( value );
-        keys.push( key );
-      } );
-      return( [keys, values] );
+    function _read_accessor( keys ) {
+      return function( input, _callback ) {
+        var params = _get_params( input, keys );
+        var query = "SELECT * FROM " + name;
+        var where = '';
+
+        if( params[0].length > 0 ) {
+          where += params[0].join( '=?,' ) + '=?';
+        }
+
+        if( schema.expires ) {
+          where += " AND expires > '" +new Date( Date.now() ).toISOString() + "'";
+        }
+      
+        if( '' !== where ) {
+          query += " WHERE " + where ;
+        }
+
+        this.query( query, params[1], function( err, data ) {
+          if( err ) { return _callback( err ); }
+          var results = [];
+          _.each( data, function( item ) {
+            results.push( new collection( item ) );
+          } );
+          _callback( null, results );
+        } );
+      };
     }
+
+    function _update_accessor( keys ) {
+      return function( input, _callback ) {
+        var params = _get_params( input, keys );
+
+        if( ( params[0].length > 0 ) && input[ schema.key ] ) {
+          var query = "UPDATE " + name + " SET " + params[0].join('=?,') + 
+            "=? WHERE " + schema.key + "=?";
+          params[1].push( input[ schema.key ] );
+
+          if( schema.expires ) {
+            query += " AND expires > '" + 
+              new Date( Date.now() ).toISOString() + "'";
+          }
+
+          this.query( query, params[1], function( err, data ) {
+            if( err ) { return _callback( err ); }
+            var qdata = {};
+            qdata[ schema.key ] = input[ schema.key ];
+            that.target[ name + 'Read' ]( qdata, _callback );
+          } );
+        } else {
+          _callback( null, [] );
+        }
+      };
+    }
+
+    function _delete_accessor( keys ) {
+      return function( input, _callback ) {
+        if( input[ schema.key ] ) {
+          var query = "DELETE FROM " + name + " WHERE " + schema.key + "=?";
+
+          if( schema.expires ) {
+            query += " AND expires > '" + 
+              new Date( Date.now() ).toISOString() + "'";
+          }
+
+          this.query( query, [ input[ schema.key ] ], function( err, data ) {
+            if( err ) { return _callback( err ); }
+            _callback( null, [] );
+          } );        
+        } else {
+          _callback( null, [] );
+        }
+      };
+    }
+
+      function _get_params ( object, input_keys ) {
+        var values = [];
+        var keys = [];
+        var items = _.intersection( _.keys( object ), input_keys );
+        _.each( items, function( item ) {
+          values.push( object[ item ] );
+          keys.push( item);
+        } );
+
+        return( [keys, values] );          
+      }
   };
 
   provider.prototype.close = function ( complete ) {
