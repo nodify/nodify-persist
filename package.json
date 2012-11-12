@@ -41,19 +41,9 @@
     "mysql",
     "mongod"
   ],
-  "_npmUser": {
-    "name": "OhMeadhbh",
-    "email": "OhMeadhbh@gmail.com"
-  },
-  "_id": "nodify-persist@0.0.1",
   "devDependencies": {},
   "optionalDependencies": {},
   "engines": {
     "node": "*"
-  },
-  "_engineSupported": true,
-  "_npmVersion": "1.1.4",
-  "_nodeVersion": "v0.6.12",
-  "_defaultsLoaded": true,
-  "_from": "nodify-persist"
+  }
 }
