@@ -1,6 +1,7 @@
 ( function ( ) {
   var _      = require( 'underscore' );
   var logger = require( 'nodify-logger' );
+  var path   = require( 'path' );
 
   var logger_options = {
     facility: 'PERSIST',
@@ -15,7 +16,7 @@
     var that = this;
     this.instances = [];
 
-    var good_options = [ 'target', 'mysql', 'collections', 'drop', 'populate', 'loglevel', 'path' ];
+    var good_options = [ 'target', 'mysql', 'collections', 'drop', 'populate', 'loglevel' ];
     _.each( good_options, function( option ) {
       if( options[ option ] ) {
         that[ option ] = options[ option ];
@@ -84,9 +85,8 @@
       }
 
       function _create() {
-        _.each( that.collections, function( path ) {
-          if( that.path ) { path = that.path + '/' + path; }
-          var collection = require( path );
+        _.each( that.collections, function( collection_path ) {
+          var collection = require( path.join( process.cwd(), collection_path ) );
           collection.dao = that.target;
           log( PERSIST.I_COLLECT, collection.name );
           instance.createCollection( collection, that.drop, that.populate, _error( _post_create ) );
