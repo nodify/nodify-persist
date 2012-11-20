@@ -11,7 +11,8 @@
 
   session.name = "session";
   session.schema = {
-    items: {
+    name: "session",
+    table: {
       id: "INT NOT NULL AUTO_INCREMENT",
       persona: "INT NOT NULL DEFAULT '1'"
     },

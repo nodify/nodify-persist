@@ -1,7 +1,7 @@
 ( function ( ) {
   function persona ( options ) {
-    this.id = options.id;
-    this.name = options.name;
+    this.pid = options.pid;
+    this.pname = options.pname;
     this.user = options.user;
   }
 
@@ -11,40 +11,54 @@
 
   persona.name = "persona";
   persona.schema = {
-    items: {
-      id: "INT NOT NULL AUTO_INCREMENT",
+    name: "persona",
+    table: {
+      pid: "INT NOT NULL AUTO_INCREMENT",
       user: "INT NOT NULL DEFAULT 1",
-      name: "VARCHAR(80) NOT NULL DEFAULT ''"
+      pname: "VARCHAR(80) NOT NULL DEFAULT ''"
     },
-    key: 'id',
+    relations: {
+      "user": {
+        "local": {
+          "members": [ "pid", "pname" ]
+        },
+        "foreign": {
+          "table": "user",
+          "members": [ "uid", "uname" ],
+          "key": { "user": "uid" }
+        }
+      }
+// SELECT persona.pid, persona.pname, user.uid, user.uname FROM persona, user WHERE persona.user=user.uid AND persona.pid=?
+    },
+    key: 'pid',
     created: true,
     insert: [
       {
-        id: 1,
+        pid: 1,
         user: 1,
-        name: "Anonymous Persona"
+        pname: "Anonymous Persona"
       },
       {
         user: 2,
-        name: "Meadhbh Hamrick"
+        pname: "Meadhbh Hamrick"
       },
       {
         user: 2,
-        name: "Meadhbh Octopodidae"
+        pname: "Meadhbh Octopodidae"
       },
       {
         user: 3,
-        name: "William Shatner"
+        pname: "William Shatner"
       },
       {
         user: 3,
-        name: "Captain Kirk"
+        pname: "Captain Kirk"
       }
     ]
   };
 
   persona.prototype.toString = function ( ) {
-    var rv = this.id + ":" + this.name;
+    var rv = this.pid + ":" + this.pname;
     if( this.userImpl ) {
       rv += "(" + this.userImpl.toString() + ")";
     }
@@ -55,7 +69,7 @@
     var that = this;
 
     if( persona.dao ) {
-      persona.dao.userRead( { id: this.user }, function( err, data ) {
+      persona.dao.userRead( { uid: this.user }, function( err, data ) {
         if( err ) { return complete( err ); }
         if( data && data.length > 0 ) {
           that.userImpl = data[0];

@@ -32,6 +32,7 @@
       } );
 
       that.connection.connect( function( err, data ) {
+        if( err ) { throw err; }
         that.query( 'USE ' + that.options.database, [], function () {
           if( _complete ) {
             _complete.apply( that, [null] );
@@ -76,13 +77,15 @@
   provider.prototype.createCollection = function( collection, drop, populate, complete ) {
     var that = this;
     var schema = collection.schema;
-    var elements = _.keys( schema.items );
-    var name = collection.name;
+    var elements = _.keys( schema.table );
+    var name = schema.name;
 
     this.target[ name + 'Create' ] = _.bind( _create_accessor( elements ), this );
     this.target[ name + 'Read' ] = _.bind( _read_accessor( elements ), this );
     this.target[ name + 'Update' ] = _.bind( _update_accessor( elements ), this );
     this.target[ name + 'Delete' ] = _.bind( _delete_accessor( elements ), this );
+
+    _create_view_accessors.apply( this, [this.target, schema] );
 
     collection.prototype._create = function ( _complete ) {
       that.target[ name + 'Create' ]( this, _complete );
@@ -105,11 +108,11 @@
     } else if( populate ) {
       _populate();
     }
-      
+    
     function _build_tables() {
       var elements = [];
-      _.each( _.keys( schema.items ), function( item ) {
-        var element = item + " " + schema.items[ item ];
+      _.each( _.keys( schema.table ), function( item ) {
+        var element = item + " " + schema.table[ item ];
         if( schema.key == item ) {
           element += " KEY";
         }
@@ -190,7 +193,7 @@
         if( schema.expires ) {
           where += " AND expires > '" +new Date( Date.now() ).toISOString() + "'";
         }
-      
+        
         if( '' !== where ) {
           query += " WHERE " + where ;
         }
@@ -252,17 +255,57 @@
       };
     }
 
-      function _get_params ( object, input_keys ) {
-        var values = [];
-        var keys = [];
-        var items = _.intersection( _.keys( object ), input_keys );
-        _.each( items, function( item ) {
-          values.push( object[ item ] );
-          keys.push( item);
+    function _create_view_accessors ( target, schema ) {
+      var that = this;
+      _.each( schema.relations, function ( relation, name ) {
+        var query;
+        var items = [];
+
+        _.each( relation.local.members, function( item ) {
+          items.push( schema.name + "." + item );
         } );
 
-        return( [keys, values] );          
-      }
+        _.each( relation.foreign.members, function( item ) {
+          items.push( relation.foreign.table + "." + item );
+        } );
+
+        query  = "SELECT " + items.join( ', ' );
+        query += " FROM " + schema.name + ', ' + relation.foreign.table;
+        
+        items = [];
+
+        _.each( relation.foreign.key, function( value, key ) {
+          items.push( schema.name + '.' + key + '=' + relation.foreign.table + "." + value );
+        } );
+
+        query += " WHERE " + items.join ( ', ' ) + " AND ";
+
+        target[ schema.name + 'View' + _camelize( name ) ] = _.bind( function( input, _callback ) {
+          items = _get_params( input, _.keys( schema.table ) );
+          query += items[0].join( '=?, ' ) + "=?";
+          console.log( query );
+          this.query( query, items[1], _callback );
+
+        }, this );
+
+      }, this );
+    }
+
+    function _get_params ( object, input_keys ) {
+      var values = [];
+      var keys = [];
+      var items = _.intersection( _.keys( object ), input_keys );
+      _.each( items, function( item ) {
+        values.push( object[ item ] );
+        keys.push( item);
+      } );
+
+      return( [keys, values] );          
+    }
+
+    function _camelize( input ) {
+      return input.substr(0,1).toUpperCase() + input.substr(1).toLowerCase();
+    }
   };
 
   provider.prototype.close = function ( complete ) {
