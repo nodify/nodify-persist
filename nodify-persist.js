@@ -76,24 +76,43 @@
       if( that.drop ) {
         instance.drop( that.mysql.database, function( err, data ) {
           if( err ) { return complete( err ); }
-          if( that.populate ) {
-            _create();
-          }
+          _create();
         } );
       } else {
         _create();
       }
 
       function _create() {
+        var collection;
+
         _.each( that.collections, function( collection_path ) {
-          var collection = require( path.join( process.cwd(), collection_path ) );
+          if( 'string' === typeof collection_path ) {
+            collection = require( path.join( process.cwd(), collection_path ) );
+          } else {
+            collection = collection_path;
+          }
+          
           collection.dao = that.target;
-          log( PERSIST.I_COLLECT, collection.name );
-          instance.createCollection( collection, that.drop, that.populate, _error( _post_create ) );
+
+          log( PERSIST.I_COLLECT, collection.schema.name );
+
+          instance.createCollection( collection, that.drop, _post_create );
         } );
       }
 
-      function _post_create () {
+      function _post_create (err, collection) {
+        if( err ) { return complete( err, null ); }
+        if( collection && collection.schema.insert ) {
+          collection.prototype._insert( collection.schema.insert, function( err ) {
+            if( err ) { return complete( err, null ); }
+            _post_insert();
+          } );
+        } else {
+          _post_insert();
+        }
+      }
+
+      function _post_insert( ) {
         count = count - 1;
         if( 0 == count ) {
           complete( null, that.target );

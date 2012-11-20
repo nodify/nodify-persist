@@ -74,7 +74,7 @@
     }
   };
 
-  provider.prototype.createCollection = function( collection, drop, populate, complete ) {
+  provider.prototype.createCollection = function( collection, drop, complete ) {
     var that = this;
     var schema = collection.schema;
     var elements = _.keys( schema.table );
@@ -84,6 +84,7 @@
     this.target[ name + 'Read' ] = _.bind( _read_accessor( elements ), this );
     this.target[ name + 'Update' ] = _.bind( _update_accessor( elements ), this );
     this.target[ name + 'Delete' ] = _.bind( _delete_accessor( elements ), this );
+    this.target[ name + 'Insert' ] = _.bind( _insert_accessor( this.target[ name + 'Create' ] ), this );
 
     _create_view_accessors.apply( this, [this.target, schema] );
 
@@ -103,10 +104,14 @@
       that.target[ name + 'Delete' ]( this, _complete );
     };
 
+    collection.prototype._insert = function ( input, _complete ) {
+      that.target[ name + 'Insert' ]( input, _complete );
+    };
+
     if( drop ) {
       _build_tables();
-    } else if( populate ) {
-      _populate();
+    } else {
+      complete( null, collection );
     }
     
     function _build_tables() {
@@ -130,30 +135,8 @@
       var query = "CREATE TABLE " + name + "(" + elements.join(',') + ")" ;
       that.query( query, [], function( err, data ) {
         if( err ) { return complete( err ); }
-        if( populate ) {
-          _populate();
-        } else {
-          complete( null, null );
-        }
+        complete( null, collection );
       } );
-    }
-
-    function _populate () {
-      if( schema.insert ) {
-        var count = schema.insert.length;
-
-        _.each( schema.insert, function( item ) {
-          that.target[ name + 'Create' ]( item, function( err, data ) {
-            if( err ) { return complete( err, null ); }
-            count = count - 1;
-            if( 0 == count ) {
-              complete( null, null );
-            }
-          } );
-        } );
-      } else {
-        complete( null, null );
-      }
     }
 
     function _create_accessor( keys ) {
@@ -166,7 +149,7 @@
         }
 
         if( params[0].length > 0 ) {
-          var query = "INSERT INTO " + name + "(" + params[0].join(',') + ") " +
+          var query = "INSERT INTO " + name + " (" + params[0].join(',') + ") " +
             "VALUES (" + Array(params[0].length).join('?,') +"?)";
           this.query( query, params[1], function( err, data ) {
             if( err ) { return _callback( err ); }
@@ -255,6 +238,23 @@
       };
     }
 
+    function _insert_accessor ( create_function ) {
+      return function( input, _callback ) {
+        var count = input.length;
+        _.each( input, function( item ) {
+          create_function( item, _complete );
+        } );
+
+        function _complete( err ) {
+          if( err ) { return _callback( err, null ); }
+          count--;
+          if( 0 === count ) {
+            return _callback( null, null );
+          }
+        }
+      };
+    };
+
     function _create_view_accessors ( target, schema ) {
       var that = this;
       _.each( schema.relations, function ( relation, name ) {
@@ -283,7 +283,6 @@
         target[ schema.name + 'View' + _camelize( name ) ] = _.bind( function( input, _callback ) {
           items = _get_params( input, _.keys( schema.table ) );
           query += items[0].join( '=?, ' ) + "=?";
-          console.log( query );
           this.query( query, items[1], _callback );
 
         }, this );

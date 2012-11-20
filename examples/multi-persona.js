@@ -1,4 +1,5 @@
 ( function ( ) {
+
   function persona ( options ) {
     this.pid = options.pid;
     this.pname = options.pname;
@@ -33,37 +34,25 @@
     key: 'pid',
     created: true,
     insert: [
-      {
-        pid: 1,
-        user: 1,
-        pname: "Anonymous Persona"
-      },
-      {
-        user: 2,
-        pname: "Meadhbh Hamrick"
-      },
-      {
-        user: 2,
-        pname: "Meadhbh Octopodidae"
-      },
-      {
-        user: 3,
-        pname: "William Shatner"
-      },
-      {
-        user: 3,
-        pname: "Captain Kirk"
-      }
+      { pid: 1, user: 1, pname: "Anonymous Persona" },
+      { user: 2, pname: "Meadhbh Hamrick" },
+      { user: 2, pname: "Meadhbh Octopodidae" },
+      { user: 3, pname: "William Shatner" },
+      { user: 3, pname: "Captain Kirk" },
+      { user: 3, pname: "T.J. Hooker" },
+      { user: 3, pname: "Guy on airplane who sees gremlin" }
     ]
   };
 
   persona.prototype.toString = function ( ) {
-    var rv = this.pid + ":" + this.pname;
-    if( this.userImpl ) {
-      rv += "(" + this.userImpl.toString() + ")";
+    var output = "Persona(" + this.pid + ") " + this.pname;
+    if( this._user ) {
+      output += " - " + this._user.toString();
+    } else {
+      output += " - User(" + this.user + ")";
     }
-    return( rv );
-  }
+    return( output );
+  };
 
   persona.prototype.loadUser = function ( complete ){
     var that = this;
@@ -72,11 +61,11 @@
       persona.dao.userRead( { uid: this.user }, function( err, data ) {
         if( err ) { return complete( err ); }
         if( data && data.length > 0 ) {
-          that.userImpl = data[0];
+          that._user = data[0];
           complete( null, that );
         }
       } );
     }
+  };
 
-  }
 } ) ( );

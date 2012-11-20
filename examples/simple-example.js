@@ -1,140 +1,98 @@
-#!/usr/bin/env node
+var persist = require( '../nodify-persist' );
+var dao;
 
-var persist = require( '../nodify-persist.js' );
+// Here we define an object that will later be the prototype
+// for all database read results. Note that elements in this
+// object are the same as fields in the row.
 
-var persist_options = {
+function user( context ) {
+  this.uid = context.uid;
+  this.uname = context.uname;
+  this.role = context.role;
+}
+
+user.prototype.toString = function () {
+  return "User(" + this.uid + ") " + this.uname + ", " + this.role;
+};
+
+// Here is the SQL schema for the user table
+
+user.schema = {
+  name: "user",
+  table: {
+    uid: "INT NOT NULL AUTO_INCREMENT",
+    uname: "VARCHAR(80) NOT NULL DEFAULT ''",
+    role: "VARCHAR(20)"
+  },
+  key: "uid"
+};
+
+// The database descriptor tells us we're connecting to a MySQL
+// database and that we want to define accessors for the user
+// table / collection.
+
+var db_descriptor = {
   mysql: {
     host: "127.0.0.1",
-    database: "daofunk",
-    user: "kickstart",
-    password: "77dreSpa"
+    database: "example",
+    user: "insert db username here",
+    password: "insert password here"
   },
   collections: [
-    "simple-user.js",
-    "simple-persona.js",
-    "simple-session.js"
+    user
   ],
   drop: true,
-  populate: true,
   loglevel: 1
 };
 
-var dao;
-var userid;
-var user;
-var persona;
+var sample_data = [
+  { uid: 1, uname: "Anonymous User" },
+  { uid: 2, uname: "John Lee", role: "Super-Taster" },
+  { uid: 3, uname: "James T. Kirk", role: "Captain" }  
+];
 
-function _error ( f ) {
-  return function( err ) {
-    if( err ) {
-      throw err;
-    }
-    
-    f.apply( this, Array.prototype.slice.call( arguments, 1 ) );
-  };
+// First, let's create a new instance; we need to keep this object
+// around in order to close the database later. The 'dao' variable
+// is the "Data Access Object." After calling init(), this object
+// will have methods to access the user table: userCreate(),
+// userRead(), userUpdate(), userDelete() and userInsert()
+
+var instance = new persist( db_descriptor );
+instance.init( function( err, target ) {
+  if( err ) { throw err; }
+  dao = target;
+
+  dao.userInsert( sample_data, post_insert );
+} );
+
+// We have (in theory) inserted several rows of data. To read
+// a record, we pass an object with some of the fields filled in.
+
+function post_insert( err ) {
+  if( err ) { throw err; }
+  dao.userRead( { uid: 2 }, post_read );
 }
 
-var instance = new persist( persist_options );
-instance.init( _error( _post_persist ) );
-
-function _post_persist( _target ) {
-  dao = _target;
-
-  // read anonymous user
-  dao.userRead( { uid: 1 }, _error( function( data ) {
-    console.log( 'anon user:' + data[0].toString() );
-    _create_user();
-  } ) );
+function post_read( err, data ) {
+  if( err ) { throw err; }
+  if( 0 === data.length ) {
+    console.log( "can't find user" );
+    return exuent_omnis( 2 );
+  }
+  var user = data[0];
+  console.log( "found user! " + user.toString() );
+  user.role = "Broom";
+  console.log( "modified user: " + user.toString() );
+  dao.userUpdate( user, post_update );
 }
 
-function _create_user() {
-  dao.userCreate( { uname: "Random User" }, _error( function( data ) {
-    console.log( 'newly created user: ' + data.toString() );
-    user = data[0];
-    _read_user();
-  } ) );
+function post_update( err ) {
+  if( err ) { throw err; }
+  exuent_omnis( 0 );  
 }
 
-function _read_user() {
-  // in theory, we should take this out of the cache
-  dao.userRead( { uid: user.uid }, _error( function( data ) {
-    console.log( 'user ' + user.uid + ': ' + data.toString() );
-    _write_user();
-  } ) );
-}
-
-function _write_user() {
-  console.log( "changing the name of this user" );
-  dao.userUpdate( { uid: user.uid, uname: "Someone Else" }, _error( function( data ) {
-    console.log( 'user ' + user.uid + ': ' + data.toString() );
-    _delete_user();
-  } ) );
-}
-
-function _delete_user() {
-  dao.userDelete( { uid: user.uid }, _error( function( ) {
-    console.log( 'user ' + user.uid + ' deleted' );
-    _read_user_again();
-  } ) );
-}
-
-function _read_user_again() {
-  console.log( "trying to read user #" + user.uid + " again" );
-  dao.userRead( { uid: user.uid }, _error( function( data ) {
-    if( data.length > 0 ) {
-      console.log( "uh oh. didn't delete" );
-    } else {
-      console.log( "looks like it really deleted it" );
-    }
-    _read_persona();
-  } ) );
-}
-
-function _read_persona() {
-  dao.personaRead( {pid: 3}, _error( function( data ) {
-    console.log( 'read persona' );
-    persona = data[0];
-    console.log( persona.toString() );
-    persona.loadUser( _error( function( data ) {
-      console.log( 'loaded user (supposedly)' );
-      console.log( persona.toString() );
-      _print_view();
-    } ) );
-  } ) );
-}
-
-function _print_view() {
-  dao.personaViewUser( { pid: persona.pid }, function (err, data ) {
-    console.log( data );
-    _print_other_view( data[0].uid );
-  } );
-}
-
-function _print_other_view( uid ) {
-  dao.userViewPersona( { uid: uid }, function( err, data ) {
-    console.log( data );
-    _create_session();
-  } );
-}
-
-function _create_session () {
-  dao.sessionCreate( { persona: 2 }, function( err, data ) {
-    console.log( data[0].toString() );
-    _create_expired_session();
-  } );
-}
-
-function _create_expired_session () {
-  dao.sessionCreate( { persona: 4, expires: new Date( Date.now() - 86400000 ).toISOString() }, function( err, data ) {
-    if( data.length != 0 ) {
-      console.log( "uh oh. we're getting expired sessions." );
-    } else {
-      console.log( "cool. properly ignoring expired sessions." );
-    }
-
-    console.log( 'closing db' );
-    instance.close( function () {
-      console.log( 'closed' );
-    } );
+function exuent_omnis( exit_code ) {
+  instance.close( function() {
+    process.exit( exit_code );
   } );
 }
