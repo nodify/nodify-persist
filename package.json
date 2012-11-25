@@ -26,11 +26,10 @@
     }
   ],
   "dependencies": {
-    "mysql": "2.0.0-alpha3",
     "nodify-logger": "0.2.3",
     "underscore": "*"
   },
-  "version": "0.0.5",
+  "version": "0.1.0",
   "main": "./nodify-persist.js",
   "directories": [
     "src",

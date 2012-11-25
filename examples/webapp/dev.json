@@ -1,0 +1,53 @@
+{
+  "persist": {
+    "log": {
+      "level": 1
+    },
+    "providers": {
+      "localdb": {
+        "mysql": {
+          "host": "localhost",
+          "database": "daofunk",
+          "user": "kickstart",
+          "password": "77dreSpa"
+        },
+        "collections": {
+          "user": "collection_user",
+          "session": "collection_session"
+        },
+        "drop": true
+      }
+    }
+  },
+  "logger": {
+    "facility": "KICK",
+    "messages_path": "messages.json"
+  },
+  "start": [ "main" ],
+  "apps": {
+    "main": {
+      "template": {
+        "path": "templates"
+      },
+      "info": {
+        "title": "helium",
+        "subtitle": "monetizing your synergy since 2012",
+        "copy": "Copyright &copy; 2011-2012 <a href=\"http://www.smithee.us/\">Smithee, Spelvin, Agnew &amp; Plinge, Inc.</a>, All Rights Reserved.<br/><a href=\"/about/tou\">Terms of Use</a>",
+        "base": "http://helium.h.sl8.us:8080/"
+      },
+      "access": {
+        "path": "helium_access.csv",
+        "format": "\":date\",\":req[x-forwarded-for]\",\":method\",\":status\",\":req[host]\",\":url\",\":referrer\",\":user-agent\""
+      },
+      "static": {
+        "path": "static",
+        "maxAge": 14400000
+      },
+      "templates": "./templates",
+      "source": "./logic_main",
+      "listen": {
+        "port": 8080
+      }
+    }
+  }
+}

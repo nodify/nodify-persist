@@ -1,0 +1,692 @@
+body {
+    overflow-y: scroll;
+    min-width: 280px;
+}
+
+.mitem {
+    padding-top: 20px;
+}
+
+.section {
+    font-size: 11pt;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+//    background-color: #99bedf;
+//    background-color: #CDDAED;
+    background-color: #F8F8F8;
+    margin-bottom: 8px;
+}
+
+.section p {
+    padding: 6px 10px 3px 20px;
+    line-height: 1.5;
+    text-align: justify;
+}
+
+.section dl {
+    padding: 6px 10px 3px 20px;
+}
+
+.section ol {
+    padding: 6px 10px 3px 20px;
+}
+
+.section ul {
+    padding: 6px 10px 3px 20px;
+}
+
+.section li {
+    padding: 3px 10px 1px 4px;
+}
+
+.section h2 {
+    font-size: 18px;
+    padding: 9px 10px 3px 10px;
+}
+
+.alert-area {
+    margin-bottom: 20px;
+    height: 36px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+}
+
+p {
+    padding-left: 4px;
+}
+
+.copy {
+    text-align: center;
+}
+
+.grey-text {
+    color: #F5F5F5;
+}
+
+.front-card {
+    background-image:url('/img/connect_card_1.png');
+    background-origin: content-box;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%;
+    height: 100%;
+    width: 100%;
+    opacity: .4;
+}
+
+.front-title {
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    background-color: rgba( 0,0,0,0.5 );
+    padding: 6px;
+}
+
+#front-info {
+    margin-bottom: 4px;
+    padding-top: 8px;
+    padding-left: 8px;
+    height: 278px;
+}
+
+#front-local {
+    margin-bottom: 4px;
+    text-align: center;
+    padding-top: 8px;
+}
+
+#front-social {
+    margin-bottom: 4px;
+    text-align: center;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+form {
+    margin: 0 0 0 0;
+}
+
+#front-social {
+    margin-bottom: 4px;
+}
+
+#login_email {
+    width: 28%;
+}
+
+#login_password {
+    width: 28%;
+}
+
+#login_signin {
+    width: 20%;
+}
+
+#social_facebook {
+    width: 39%;
+    background-image: url('/img/fbc.jpg');
+    background-position: center;
+    background-size: 85%;
+    background-repeat: no-repeat;
+    background-origin: content-box;
+}
+
+#social_twitter {
+    width: 39%;
+    background-image: url('/img/twitter.png');
+    background-position: center;
+    background-size: 85%;
+    background-repeat: no-repeat;
+    background-origin: content-box;
+}
+
+#front-facebook {
+    height: 21px;
+    width: 147px;
+    background-image :url('/img/fbc.jpg');
+    background-size: cover;
+}
+
+#front-twitter{
+}
+
+#front-provision {
+    padding: 8px;
+}
+
+#front-welcome-image {
+    background-image:url('/img/front.png');
+    background-size: cover;
+}
+
+#front-welcome {
+    background: #0B61A4; /* Old browsers */
+    background: -moz-linear-gradient(45deg,  #0B61A4 0%, #66a3d2 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left bottom, right top, color-stop(0%,#0B61A4), color-stop(100%,#66a3d2)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(45deg,  #0B61A4 0%,#66a3d2 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(45deg,  #0B61A4 0%,#66a3d2 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(45deg,  #0B61A4 0%,#66a3d2 100%); /* IE10+ */
+    background: linear-gradient(45deg,  #0B61A4 0%,#66a3d2 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0B61A4', endColorstr='#66a3d2',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+    -webkit-box-shadow: inset 0 3px 7px rgba(0,0,0,.2), inset 0 -3px 7px rgba(0,0,0,.2);
+    -moz-box-shadow: inset 0 3px 7px rgba(0,0,0,.2), inset 0 -3px 7px rgba(0,0,0,.2);
+    box-shadow: inset 0 3px 7px rgba(0,0,0,.2), inset 0 -3px 7px rgba(0,0,0,.2);
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+}
+
+.col1 {
+    background-image:url('/img/_scan.png');
+}
+
+.col2 {
+    background-image:url('/img/_sync.png');
+}
+
+.col3 {
+    background-image:url('/img/_card.png');
+}
+
+.image {
+  display: block;
+  margin: 0 auto 30px;
+  position: relative;
+  top: 12px;
+  background-size: cover;
+}
+
+.navbar .brand {
+    font-size: 18px;
+}
+
+@media (max-width: 480px) {
+    .navbar .brand {
+        font-size: 17px;
+    }
+
+    body {
+        padding-bottom: 56px;
+    }
+
+    #front-welcome {
+        position: relative;
+        display: block;
+        border-radius: 4px;
+        margin-bottom: 4px;
+    }
+
+    .front-main {
+        height: 124px;
+    }
+
+    .front-app {
+        height: 124px;
+    }
+
+    .front-title {
+        top: 12px;
+    }
+
+    .front-title h1 {
+        font-size: 22px;
+        line-height: 28px;
+    }
+
+    .navbar-fixed-bottom {
+        position: fixed;
+    }
+
+    .image {
+        background-position: 0px -16px;
+        background-size: cover;
+        height: 100px;
+        width: 92%;
+    }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+    body {
+        padding-bottom: 56px;
+    }
+
+    #front-welcome {
+        position: relative;
+        display: block;
+        -webkit-border-radius: 4px;
+        -moz-border-radius: 4px;
+        border-radius: 4px;
+        margin-bottom: 4px;
+    }
+
+    .front-main {
+        height: 124px;
+    }
+
+    .front-app {
+        height: 124px;
+    }
+
+    .front-title {
+        top: 12px;
+    }
+
+    .navbar-fixed-bottom {
+        position: fixed;
+    }
+
+    .image {
+        background-position: 0px -48px;
+        background-size: cover;
+        height: 100px;
+        width: 96%;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 980px) {
+
+    .section {
+        left: 8px;
+        position: relative;
+    }
+
+    #provision-submit {
+        position: relative;
+        top: -5px;
+        right: -25px;
+    }
+
+    #front-welcome {
+        position: relative;
+        display: block;
+        -webkit-border-radius: 4px;
+        -moz-border-radius: 4px;
+        border-radius: 4px;
+        margin-bottom: 4px;
+    }
+
+    .front-main {
+        height: 205px;
+    }
+
+    .front-app {
+        height: 285px;
+    }
+
+    .front-title {
+        bottom: 12px;
+    }
+
+    .navbar-fixed-bottom {
+        position: fixed;
+    }
+
+    body {
+        padding-bottom: 56px;
+    }
+
+    .image {
+        height: 100px;
+        width: 206px;
+    }
+
+    .marketing .column {
+        min-height: 580px;
+    }
+}
+
+@media (min-width: 981px) and (max-width: 1200px) {
+    body {
+        padding-top: 56px;
+        padding-bottom: 56px;
+    }
+
+    .section {
+        left: 8px;
+        position: relative;
+    }
+
+    #provision-submit {
+        position: relative;
+        top: -5px;
+        right: -25px;
+    }
+
+    #front-welcome {
+        position: relative;
+        display: block;
+        -webkit-border-radius: 4px;
+        -moz-border-radius: 4px;
+        border-radius: 4px;
+        margin-bottom: 4px;
+    }
+
+    .front-main {
+        height: 205px;
+    }
+
+    .front-app {
+        height: 285px;
+    }
+
+    .front-title {
+        bottom: 12px;
+    }
+
+    .image {
+        height: 133px;
+        width: 276px;
+    }
+
+    .marketing .column {
+        min-height: 500px;
+    }
+}
+
+@media (min-width: 1201px) {
+    body {
+        padding-top: 56px;
+        padding-bottom: 56px;
+    }
+
+    .section {
+        left: 8px;
+        position: relative;
+    }
+
+    #provision-submit {
+        position: relative;
+        top: -5px;
+        right: -35px;
+    }
+
+    #front-welcome {
+        position: relative;
+        display: block;
+        -webkit-border-radius: 4px;
+        -moz-border-radius: 4px;
+        border-radius: 4px;
+        margin-bottom: 4px;
+    }
+
+    .front-main {
+        height: 205px;
+    }
+
+    .front-app {
+        height: 285px;
+    }
+
+    .front-title {
+        bottom: 12px;
+    }
+
+    .image {
+        background-position: 0px -16px;
+        background-size: 344px 166px;
+        height: 100px;
+        width: 344px;
+    }
+
+    .marketing .column {
+        min-height: 424px;
+    }
+}
+
+/* Jumbotrons
+-------------------------------------------------- */
+
+/* Base class
+------------------------- */
+.jumbotron {
+  position: relative;
+  padding: 40px 0;
+  color: #fff;
+  text-align: center;
+  text-shadow: 0 1px 3px rgba(0,0,0,.4), 0 0 30px rgba(0,0,0,.075);
+  background: #0B61A4; /* Old browsers */
+  background: -moz-linear-gradient(45deg,  #0B61A4 0%, #66a3d2 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left bottom, right top, color-stop(0%,#0B61A4), color-stop(100%,#66a3d2)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(45deg,  #0B61A4 0%,#66a3d2 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(45deg,  #0B61A4 0%,#66a3d2 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(45deg,  #0B61A4 0%,#66a3d2 100%); /* IE10+ */
+  background: linear-gradient(45deg,  #0B61A4 0%,#66a3d2 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0B61A4', endColorstr='#66a3d2',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+  -webkit-box-shadow: inset 0 3px 7px rgba(0,0,0,.2), inset 0 -3px 7px rgba(0,0,0,.2);
+     -moz-box-shadow: inset 0 3px 7px rgba(0,0,0,.2), inset 0 -3px 7px rgba(0,0,0,.2);
+          box-shadow: inset 0 3px 7px rgba(0,0,0,.2), inset 0 -3px 7px rgba(0,0,0,.2);
+}
+
+.jumbotron h1 {
+  font-size: 68px;
+  font-weight: bold;
+  letter-spacing: -1px;
+  line-height: 1;
+}
+
+.jumbotron p {
+  font-size: 20px;
+  font-weight: 300;
+  line-height: 30px;
+  margin-bottom: 30px;
+}
+
+/* Link styles (used on .masthead-links as well) */
+.jumbotron a {
+  color: #fff;
+  color: rgba(255,255,255,.5);
+  -webkit-transition: all .2s ease-in-out;
+     -moz-transition: all .2s ease-in-out;
+          transition: all .2s ease-in-out;
+}
+.jumbotron a:hover {
+  color: #fff;
+  text-shadow: 0 0 10px rgba(255,255,255,.25);
+}
+
+/* Download button */
+@-webkit-keyframes downloadButton {
+  from { box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 5px rgba(0,0,0,.25), 0 2px 10px rgba(0,68,204,.5); }
+  50% {  box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 5px rgba(0,0,0,.25), 0 2px 25px rgba(0,68,204,.9); }
+  to {   box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 5px rgba(0,0,0,.25), 0 2px 10px rgba(0,68,204,.5); }
+}
+@-moz-keyframes downloadButton {
+  from { box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 5px rgba(0,0,0,.25), 0 2px 10px rgba(0,68,204,.5); }
+  50% {  box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 5px rgba(0,0,0,.25), 0 2px 25px rgba(0,68,204,.9); }
+  to {   box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 5px rgba(0,0,0,.25), 0 2px 10px rgba(0,68,204,.5); }
+}
+
+.masthead .btn {
+  padding: 14px 24px;
+  font-size: 24px;
+  font-weight: 200;
+  color: #fff; /* redeclare to override the `.jumbotron a` */
+  border: 0;
+  -webkit-border-radius: 6px;
+     -moz-border-radius: 6px;
+          border-radius: 6px;
+  -webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 5px rgba(0,0,0,.25), 0 2px 10px rgba(0,68,204,.01);
+     -moz-box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 5px rgba(0,0,0,.25), 0 2px 10px rgba(0,68,204,.01);
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 5px rgba(0,0,0,.25), 0 2px 10px rgba(0,68,204,.01);
+  -webkit-animation-name: downloadButton;
+     -moz-animation-name: downloadButton;
+  -webkit-animation-duration: 1.5s;
+     -moz-animation-duration: 1.5s;
+  -webkit-animation-iteration-count: infinite;
+     -moz-animation-iteration-count: infinite;
+  -webkit-transition: none;
+     -moz-transition: none;
+          transition: none;
+
+}
+.masthead .btn:active {
+  -webkit-box-shadow: inset 0 2px 4px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.1);
+     -moz-box-shadow: inset 0 2px 4px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.1);
+          box-shadow: inset 0 2px 4px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.1);
+}
+
+
+/* Pattern overlay
+------------------------- */
+.jumbotron .container {
+  position: relative;
+  z-index: 2;
+}
+.jumbotron:after {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  opacity: .4;
+}
+
+/* Masthead (docs home)
+------------------------- */
+.masthead {
+  padding: 70px 0 80px;
+  margin-bottom: 0;
+  color: #fff;
+}
+.masthead h1 {
+  font-size: 120px;
+  line-height: 1;
+  letter-spacing: -2px;
+}
+.masthead p {
+  font-size: 40px;
+  font-weight: 200;
+  line-height: 1.25;
+}
+
+/* Textual links in masthead */
+.masthead-links {
+  margin: 0;
+  list-style: none;
+}
+.masthead-links li {
+  display: inline;
+  padding: 0 10px;
+  color: rgba(255,255,255,.25);
+}
+
+body > .navbar {
+  font-size: 13px;
+}
+
+body > .navbar .brand {
+  margin-left: 20px;
+  font-weight: bold;
+}
+
+.marketing .row {
+    margin-top: 12px;
+}
+
+.marketing .column {
+//    background-color: #99bedf;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+}
+
+.marketing {
+  color: #5a5a5a;
+}
+.marketing h1 {
+  text-align: center;
+  font-size: 48px;
+  font-weight: 200;
+  line-height: 1;
+  letter-spacing: -1px;
+}
+.marketing h2 {
+  text-align: center;
+  margin-bottom: 5px;
+  font-size: 24px;
+}
+
+.marketing p {
+  text-align: left;
+  font-size: 16px;
+  line-height: 1.5;
+}
+.marketing .marketing-byline {
+  text-align: center;
+  margin-bottom: 40px;
+  font-size: 20px;
+  font-weight: 300;
+  line-height: 25px;
+  color: #999;
+}
+
+.menu {
+  font-size: 20px;
+  font-weight: 200;
+}
+
+p.front {
+    text-align: justify;
+    font-size: 11pt;
+    padding: 6px 20px 3px 20px;
+}
+
+.marketing h2 a {
+    color: #5A5A5A;
+}
+
+.error-image {
+    position: relative;
+    display: block;
+    height: 320px;
+    background-image:url('/img/fail.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    background-position: center;
+}
+
+.error-status {
+    position: relative;
+    display: block;
+    height: 320px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    color: #FFFFFF;
+    background-color: #6bc4c2;
+    text-align: center;
+    font-size: 160px;
+    line-height: 320px;
+    margin-bottom: 20px;
+}
+
+.error-text {
+    font-size: 8pt;
+}
+
+.card {
+    width: 50%;
+    padding: 5px;
+    display: table;
+    margin: 0 auto;
+}
+
+.card-business {
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    background-color: #5A5A5A;
+    width: 270px;
+    height: 184px;
+    background-size: 260px 174px;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin: 5px;
+}

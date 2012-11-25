@@ -29,7 +29,6 @@
           "key": { "user": "uid" }
         }
       }
-// SELECT persona.pid, persona.pname, user.uid, user.uname FROM persona, user WHERE persona.user=user.uid AND persona.pid=?
     },
     key: 'pid',
     created: true,

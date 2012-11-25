@@ -11,53 +11,55 @@
   var log;
   var PERSIST;
 
-
-  function persist( options ) {
-    var that = this;
-    this.instances = [];
-
-    var good_options = [ 'target', 'mysql', 'collections', 'drop', 'populate', 'loglevel' ];
-    _.each( good_options, function( option ) {
-      if( options[ option ] ) {
-        that[ option ] = options[ option ];
-      }
-    } );
+  function persist( descriptor ) {
+    this._providers = descriptor.providers;
+    this._log = descriptor.log ? descriptor.log : {};
+    this._target = descriptor.target ? descriptor.target : {}
+    _.each( logger_options, function( value, key ) { this._log[ key ] = value; }, this );
   }
 
   if( module && module.exports ) {
     module.exports = persist;
   }
 
+  persist.persistent = {};
+
   persist.prototype.init = function( complete ) {
     var that = this;
+    var outer_count;
 
-    if( ! this.target ) {
-      this.target = {};
-    }
-
-    var provider;
-    var options;
-    var instance;
-
-    if( this.loglevel ) {
-      logger_options.level = this.loglevel;
-    }
-    logger.createInstance( logger_options, _post_logger );
-
-    function _post_logger ( _f, _m ) {
+    logger.createInstance( this._log, function _post_logger ( _f, _m ) {
       log = _f;
       PERSIST = _m;
 
-      if( that.mysql ) {
+      that.providers = {};
+      outer_count = _.keys( that._providers ).length;
+      _.each( that._providers, _create_provider );
+      
+    } );
+
+    function _create_provider( descriptor, name ) {
+      var provider, options, instance;
+
+      if( descriptor.mysql ) {
         provider = require( './src/nodify-mysql' );
-        options = that.mysql;
+        options = descriptor.mysql;
+        if( ! persist.persistent.mysql ) {
+          persist.persistent.mysql = provider.persistent;
+        }
         log( PERSIST.I_MYSQL, options.host, options.database, options.user );
-      } else if( that.sqllite ) {
-        provider = require( 'src/nodify-sqllite' );
-        options = that.sqllite;
-      } else if( that.mongo ) {
+      } else if( descriptor.sqlite ) {
+        provider = require( 'src/nodify-sqlite' );
+        options = descriptor.sqlite;
+        if( ! persist.persistent.sqlite ) {
+          persist.persistent.sqlite = provider.persistent;
+        }
+      } else if( descriptor.mongo ) {
         provider = require( 'src/nodify-mongo' );
-        options = that.mongo;
+        options = descriptor.mongo;
+        if( ! persist.persistent.mongo ) {
+          persist.persistent.mongo = provider.persistent;
+        }
       }
 
       if( ! provider ) {
@@ -65,66 +67,62 @@
         return complete( new Error( 'no provider specified' ), null );
       }
 
-      instance = new provider( options, that.target, log, PERSIST );
-      that.instances.push( instance );
-      instance.init( _error( _post_instance_init ) );
-    }
+      instance = new provider( options, that._target, log, PERSIST );
+      instance._collections = {};
+      that.providers[ name ] = instance;
 
-    function _post_instance_init ( ) {
-      var count = that.collections.length;
+      instance.init( {drop: descriptor.drop}, function( err ) {
+        if( err ) { return complete( err, null ); }
 
-      if( that.drop ) {
-        instance.drop( that.mysql.database, function( err, data ) {
-          if( err ) { return complete( err ); }
-          _create();
-        } );
-      } else {
-        _create();
-      }
-
-      function _create() {
+        var count = _.keys( descriptor.collections ).length;
         var collection;
 
-        _.each( that.collections, function( collection_path ) {
+        _.each( descriptor.collections, function( collection_path, collection_name ) {
           if( 'string' === typeof collection_path ) {
             collection = require( path.join( process.cwd(), collection_path ) );
           } else {
             collection = collection_path;
           }
           
-          collection.dao = that.target;
+          collection.dao = that._target;
+          instance._collections[ collection_name ] = collection;
 
-          log( PERSIST.I_COLLECT, collection.schema.name );
+          log( PERSIST.I_COLLECT, collection_name );
 
-          instance.createCollection( collection, that.drop, _post_create );
+          instance.createCollection( collection, collection_name, _post_create );
         } );
-      }
 
-      function _post_create (err, collection) {
-        if( err ) { return complete( err, null ); }
-        if( collection && collection.schema.insert ) {
-          collection.prototype._insert( collection.schema.insert, function( err ) {
-            if( err ) { return complete( err, null ); }
+        function _post_create( err, collection ) {
+          if( err ) { return complete( err, null ); }
+
+          if( descriptor.drop && collection.schema.insert ) {
+            collection.prototype._insert( collection.schema.insert, function( err ) {
+              if( err ) { return complete( err, null ); }
+              _post_insert();
+            } );
+          } else {
             _post_insert();
-          } );
-        } else {
-          _post_insert();
+          }
         }
-      }
 
-      function _post_insert( ) {
-        count = count - 1;
-        if( 0 == count ) {
-          complete( null, that.target );
+        function _post_insert( ) {
+          count = count - 1;
+          if( 0 == count ) {
+            outer_count = outer_count - 1;
+            if( 0 == outer_count ) {
+              complete( null, that._target );
+            }
+          }
         }
-      }
+      } );
+
     }
   };
 
   persist.prototype.close = function ( complete ) {
-    var count = this.instances.length;
+    var count = this.providers.length;
 
-    _.each( this.instances, function( item ) {
+    _.each( this.providers, function( item ) {
       item.close( function( ) {
         count = count - 1;
         if( 0 == count ) {
@@ -134,14 +132,37 @@
     } );
   };
 
-  function _error ( f ) {
-    return function( err ) {
-      if( err ) {
-        throw err;
-      }
-    
-      f.apply( this, Array.prototype.slice.call( arguments, 1 ) );
-    };
+  persist.prototype.getClientSource = function () {
+    function persistent ( context ) {
+    if( this.keys ) {
+      _.each( this.keys, function( item ) {
+        if( context[ item ] ) {
+          this[ item ] = context[ item ];
+        }
+      }, this );
+    }
   }
+
+    var output = "";
+    output += "( function() {\n  " + persistent.toString() + "\nwindow.persistent=persistent;\n})();\n";
+    _.each( this.providers, function( item ) {
+      _.each( item._collections, function ( collection, name ) {
+        output += "( function () {\n";
+        output += "  " + collection.toString();
+        output += "\n  window." + name + "=" + name + ";\n";
+        output += "  " + name + ".prototype=new persistent();";
+        if( collection.prototype._keys ) {
+          output += "  " + name + ".prototype.keys=['" + collection.prototype._keys.join("','") + "'];\n";
+        }
+        _.each( collection.prototype, function( value, key ) {
+          if( ( 'function' === typeof value ) && ('_' !== key.substr(0,1) ) ) {
+            output += "  " + name + ".prototype." + key + "=" + value.toString() + "\n";
+          }
+        } );
+        output += "} ) ();\n"
+      } );
+    } );
+    return output;
+  };
 
 } ) ( );

@@ -1,4 +1,4 @@
-var persist = require( '../nodify-persist' );
+var persist = require( '../../nodify-persist' );
 var dao;
 
 // Here we define an object that will later be the prototype

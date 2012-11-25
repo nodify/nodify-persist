@@ -1,0 +1,62 @@
+<div class="modal hide fade" id="recovery-modal">
+  <div class="modal-header">
+    <a class="close" data-dismiss="modal">x</a>
+    <h3>Password Recovery</h3>
+  </div>
+  <div class="modal-body">
+    <div class="front" id="front-recovery">
+      <p>
+        Type in your email address and we'll email you a link to the
+        password recovery page.
+      </p>
+      <input tabindex="13" type="text" class="bordered input-modal" placeholder="Email" id="input_recovery_email"/>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <a tabindex="14" href="#" class="btn" data-dismiss="modal">Close</a>
+    <a tabindex="15" href="#" class="btn btn-primary" id="input-recover" onclick="recover()">Recover</a>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <div class="span7">
+      <div id="front-welcome" class="front-app">
+        <div class="front-card">&nbsp;</div>
+        <div class="front-title">
+          <h1 class="pagination-left grey-text">webapp example</h1>
+          <h3 class="pagination-left grey-text">monetizing synergy moving forward since 1998</h3>
+        </div>
+      </div>
+    </div>
+    <div class="span5">
+      <div id="front-local" class="row section">
+        <form class="form-inline">
+          <input type="text" id="login_email" class="input-small" placeholder="Email">
+          <input type="password" id="login_password" class="input-small" placeholder="Password">
+          <a id="login_signin" class="btn" onclick="signin()">Sign in</a>
+        </form>
+        <form class="form-inline">
+          <a tabindex="5" href="#recovery-modal" id="link-forgot" data-toggle="modal">i forgot my password</a>
+        </form>
+      </div>
+
+      <div id="front-social" class="row section">
+        <form class="form-inline">
+          <a id="social_facebook" class="btn" onclick="signin_facebook()">&nbsp;</a>
+          <a id="social_twitter" class="btn" onclick="signin_twitter()">&nbsp;</a>
+        </form>
+      </div>
+
+      <div id="front-provision" class="row section">
+        <label>Need an account?</label>
+        <input type="text" placeholder="Name" id="provision_name" class="span5">
+        <input type="text" placeholder="Email" class="span5" id="provision_email">
+        <input type="password" placeholder="Password" class="span5" id="provision_password_1">
+        <input type="password" placeholder="Password (again)" class="span3" id="provision_password_2">
+        <input type="button" class="btn span2" id="provision-submit" value="Sign Up" onclick="provision()">
+      </div>
+    </div>
+  </div>
+</div>
+

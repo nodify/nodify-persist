@@ -5,11 +5,17 @@
   },
   "I": {
     "MYSQL": "host=%s, database=%s, user=%s",
-    "COLLECT": "processing collection %s"
+    "COLLECT": "processing collection %s",
+    "EXIST": "database %s doesn't exist, attempting to create",
+    "DROP": "dropping database %s"
+  },
+  "S": {
+    "DBCREATE": "successfully created database %s"
   },
   "E": {
     "NOPROV": "No Provider Specified",
     "CONNECT": "%j",
-    "QUERY": "%j"
+    "QUERY": "%j",
+    "DBCREATE": "error creating database %s: %s"
   }
 }
