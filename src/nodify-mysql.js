@@ -304,8 +304,7 @@
         var crname = _camelize( rname );
         target[ name + 'View' + crname ] = _.bind( function( input, _callback ) {
           items = _get_params( input, _.keys( schema.table ) );
-          query += items[0].join( '=? AND ' ) + "=?";
-          this.query( query, items[1], _callback );
+          this.query( query + items[0].join( '=? AND ' ) + "=?", items[1], _callback );
         }, this );
 
         collection.prototype[ '_view' + crname ] = function ( _complete ) {
