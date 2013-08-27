@@ -29,7 +29,7 @@
     "nodify-logger": "0.2.3",
     "underscore": "*"
   },
-  "version": "0.1.1",
+  "version": "0.1.2",
   "main": "./nodify-persist.js",
   "directories": [
     "src",

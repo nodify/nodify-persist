@@ -342,14 +342,14 @@
       _.each( this._keys, function( item ) {
         var cased = item.substr(0,1).toUpperCase() + item.substr(1).toLowerCase();
         this[ 'get' + cased ] = function () {
-    return this[ item ];
-  };
+          return this[ item ];
+        };
         this[ 'set' + cased ] = function ( arg ) {
-    if( arg != this[ item ] ) {
-      this[ item ] = arg;
-      this._dirty = true;
-    }
-  };
+          if( arg != this[ item ] ) {
+            this[ item ] = arg;
+            this._dirty = true;
+          }
+        };
       }, this );
     }
 
@@ -359,6 +359,9 @@
           this[ item ] = options[ item ];
         }
       }, this );
+      if( this._schema.created ) {
+        this.created = options.created;
+      }
     }
   }
 
